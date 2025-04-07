@@ -25,4 +25,8 @@ class Task extends Model
     {
         return $this->morphMany(ChangeLog::class, 'changeable');
     }
+    public function histories()
+    {
+        return $this->hasMany(History::class);
+    }
 }

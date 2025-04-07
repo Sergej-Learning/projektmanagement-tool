@@ -25,4 +25,8 @@ class Project extends Model
     {
         return $this->morphMany(ChangeLog::class, 'changeable');
     }
+    public function reports()
+    {
+        return $this->hasMany(Report::class);
+    }
 }
