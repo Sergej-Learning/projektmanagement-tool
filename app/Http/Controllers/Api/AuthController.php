@@ -38,18 +38,19 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+        if (Auth::attempt($request->only('email', 'password'))) {
+            $user = Auth::user();
+            $token = $user->createToken('API Token')->plainTextToken;
+
+            return response()->json([
+                'user' => $user,
+                'token' => $token,
+            ]);
         }
 
-        $user = Auth::user();
-        $token = $user->createToken('API Token')->plainTextToken;
-
-        return response()->json([
-            'user' => $user,
-            'token' => $token,
-        ]);
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
+
 
     // User Profil (Aktueller Benutzer)
     public function profile(Request $request)

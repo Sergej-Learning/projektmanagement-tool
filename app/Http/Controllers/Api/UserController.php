@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
@@ -34,5 +35,14 @@ class UserController extends Controller
         $user->save();
 
         return response()->json($user);
+    }
+
+    public function index()
+    {
+
+        if (Gate::denies('isAdmin')) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+        return response()->json(User::all());
     }
 }

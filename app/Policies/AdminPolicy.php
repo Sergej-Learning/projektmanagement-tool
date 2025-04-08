@@ -11,8 +11,8 @@ class AdminPolicy
      * @param \App\Models\User $user
      * @return bool
      */
-    public function isAdmin(User $user)
+    public function isAdmin(User $user): bool
     {
-        return $user->role === 'admin';
+        return $user->is_admin;
     }
 }
