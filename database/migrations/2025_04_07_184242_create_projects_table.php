@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->text('description')->nullable();
             $table->enum('status', ['planned', 'in_progress', 'completed'])->default('planned');
             $table->date('start_date')->nullable();

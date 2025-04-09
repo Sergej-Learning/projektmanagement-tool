@@ -23,7 +23,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'is_admin'
     ];
 
     /**
@@ -46,7 +45,6 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'is_admin' => 'boolean',
         ];
     }
     public function roles()
@@ -72,5 +70,25 @@ class User extends Authenticatable
     public function changeLogs()
     {
         return $this->hasMany(ChangeLog::class);
+    }
+
+    public function hasRole($role)
+    {
+        return $this->roles()->where('name', $role)->exists();
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isProjectManager()
+    {
+        return $this->role === 'project_manager';
+    }
+
+    public function isEmployee()
+    {
+        return $this->role === 'employee';
     }
 }

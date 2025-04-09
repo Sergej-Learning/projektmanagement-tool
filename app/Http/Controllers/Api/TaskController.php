@@ -4,49 +4,53 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Task;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
+    use AuthorizesRequests;
 
     public function index()
     {
+        $this->authorize('viewAny', Task::class);
+
         return response()->json(Task::all());
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'project_id' => 'required|exists:projects,id',
+        $this->authorize('create', Task::class);
+
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'required|string',
-            'due_date' => 'nullable|date',
-            'progress' => 'required|integer|between:0,100',
+            'project_id' => 'required|exists:projects,id',
         ]);
 
-        $task = Task::create($request->all());
+        $task = Task::create($validated);
 
         return response()->json($task, 201);
     }
 
     public function show(Task $task)
     {
+        $this->authorize('view', $task);
+
         return response()->json($task);
     }
 
 
     public function update(Request $request, Task $task)
     {
-        $request->validate([
+        $this->authorize('update', $task);
+
+        $validated = $request->validate([
             'title' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'nullable|string',
-            'due_date' => 'nullable|date',
-            'progress' => 'nullable|integer|between:0,100',
         ]);
 
-        $task->update($request->all());
+        $task->update($validated);
 
         return response()->json($task);
     }
@@ -54,8 +58,10 @@ class TaskController extends Controller
 
     public function destroy(Task $task)
     {
+        $this->authorize('delete', $task);
+
         $task->delete();
 
-        return response()->json(null, 204);
+        return response()->json(['message' => 'Task deleted']);
     }
 }

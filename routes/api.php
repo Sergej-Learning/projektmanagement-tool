@@ -8,25 +8,28 @@ use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\HistoryController;
 
-// Öffentliche Routen (ohne Auth)
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+// Authentification routes
+Route::post('login', [AuthController::class, 'login']);
+Route::post('register', [AuthController::class, 'register']);
+Route::post('logout', [AuthController::class, 'logout']);
+Route::get('me', [AuthController::class, 'profile']);
 
-// Geschützte Routen (mit Auth Sanctum)
+
+// Auth Sanctum-Routes
 Route::middleware('auth:sanctum')->group(function () {
 
-    // Benutzerprofil und Logout
-    Route::get('/me', [AuthController::class, 'profile']);
-    Route::post('/logout', [AuthController::class, 'logout']);
+    // Projects-Routes
+    Route::resource('projects', ProjectController::class);
 
-    // Admin-Routen (Nur Admin-User)
-    Route::middleware('can:isAdmin')->group(function () {
-        Route::apiResource('users', UserController::class);
-    });
+    // Reports-Routes
+    Route::resource('reports', ReportController::class);
 
-    // User & Admin Routen
-    Route::apiResource('projects', ProjectController::class);
-    Route::apiResource('tasks', TaskController::class);
-    Route::apiResource('reports', ReportController::class);
-    Route::apiResource('histories', HistoryController::class);
+    // Tastks-Route
+    Route::resource('tasks', TaskController::class);
+
+    //History-Routes
+    Route::resource('histories', HistoryController::class);
+
+    //User-Routes
+    Route::resource('users', UserController::class);
 });

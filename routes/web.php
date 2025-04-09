@@ -12,6 +12,5 @@ Route::get('/docs', function () {
     return view('scribe.index');
 });
 
-Route::middleware('can:isAdmin')->group(function () {
-    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index']);
-});
+
+Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->middleware('auth');

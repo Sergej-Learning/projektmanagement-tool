@@ -3,18 +3,22 @@
 namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
 use App\Models\User;
-use App\Policies\AdminPolicy;
+use App\Policies\UserPolicy;
+
+
 
 class AuthServiceProvider extends ServiceProvider
 {
     protected $policies = [
-        User::class => AdminPolicy::class,
+        \App\Models\User::class => \App\Policies\UserPolicy::class,
+        \App\Models\Project::class => \App\Policies\ProjectPolicy::class,
+        \App\Models\Task::class => \App\Policies\TaskPolicy::class,
+        \App\Models\History::class => \App\Policies\HistoryPolicy::class,
     ];
 
     public function boot(): void
     {
-        Gate::define('isAdmin', [AdminPolicy::class, 'isAdmin']);
+        $this->registerPolicies();
     }
 }
